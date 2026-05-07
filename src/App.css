@@ -1,0 +1,24 @@
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.main {
+  flex: 1;
+  padding: 32px 24px 64px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.form-col { position: sticky; top: 24px; }
+.result-col { min-height: 500px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .form-col { position: static; }
+}

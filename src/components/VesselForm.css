@@ -1,0 +1,54 @@
+.vessel-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+
+.form-header { margin-bottom: 20px; }
+.form-title { font-family: var(--serif); font-size: 24px; color: var(--text); margin-bottom: 4px; }
+.form-desc { font-size: 13px; color: var(--text2); }
+
+.preset-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+  padding-bottom: 20px; border-bottom: 1px solid var(--border);
+}
+.preset-label { font-size: 12px; color: var(--text3); margin-right: 2px; }
+.preset-btn {
+  padding: 5px 12px; font-size: 12px; font-weight: 500;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 6px; transition: all 0.15s;
+}
+.preset-btn:hover { color: var(--teal); border-color: rgba(0,212,170,0.3); background: var(--teal-dim); }
+
+.fields { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; font-weight: 500; color: var(--text2); letter-spacing: 0.03em; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.advanced-toggle {
+  background: transparent; color: var(--text3);
+  font-size: 12px; display: flex; align-items: center; gap: 5px;
+  padding: 4px 0; align-self: flex-start; transition: color 0.15s;
+}
+.advanced-toggle:hover { color: var(--teal); }
+
+.advanced-fields { display: flex; flex-direction: column; gap: 14px; }
+
+.analyze-btn {
+  margin-top: 20px; width: 100%; padding: 13px;
+  background: var(--teal); color: #000;
+  font-size: 14px; font-weight: 600;
+  border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.15s;
+}
+.analyze-btn:hover:not(:disabled) { background: #00efc0; transform: translateY(-1px); }
+.analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.hint { font-size: 12px; color: var(--text3); text-align: center; margin-top: 10px; }
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+textarea { font-family: var(--sans); }
