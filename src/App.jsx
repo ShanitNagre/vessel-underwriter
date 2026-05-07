@@ -6,9 +6,8 @@ import ApiKeyModal from './components/ApiKeyModal'
 import './App.css'
 
 export default function App() {
-  const [apiKey, setApiKey] = useState(localStorage.getItem('grok_key') || '')
-  const [showModal, setShowModal] = useState(!localStorage.getItem('grok_key'))
-  const [analysis, setAnalysis] = useState(null)
+  const [apiKey, setApiKey] = useState(import.meta.env.VITE_GROK_KEY || localStorage.getItem('grok_key') || '')
+const [showModal, setShowModal] = useState(!import.meta.env.VITE_GROK_KEY && !localStorage.getItem('grok_key'))  const [analysis, setAnalysis] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
