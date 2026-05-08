@@ -2,24 +2,16 @@ import { useState } from 'react'
 import Header from './components/Header'
 import VesselForm from './components/VesselForm'
 import AnalysisResult from './components/AnalysisResult'
-import ApiKeyModal from './components/ApiKeyModal'
 import './App.css'
 
+const GROK_KEY = import.meta.env.VITE_GROK_KEY
+
 export default function App() {
-const [apiKey, setApiKey] = useState(import.meta.env.VITE_GROK_KEY || '')
-const [showModal, setShowModal] = useState(!import.meta.env.VITE_GROK_KEY && !localStorage.getItem('grok_key'))  
- const [analysis, setAnalysis] = useState(null)
+  const [analysis, setAnalysis] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSaveKey = (key) => {
-    localStorage.setItem('grok_key', key)
-    setApiKey(key)
-    setShowModal(false)
-  }
-
   const analyzeVessel = async (vesselData) => {
-    if (!apiKey) { setShowModal(true); return }
     setLoading(true)
     setError('')
     setAnalysis(null)
@@ -30,75 +22,45 @@ Vessel Details:
 - Name: ${vesselData.name}
 - Type: ${vesselData.type}
 - Year Built: ${vesselData.yearBuilt}
-- DWT (Deadweight Tonnage): ${vesselData.dwt} tonnes
+- DWT: ${vesselData.dwt} tonnes
 - Flag State: ${vesselData.flag}
-- Classification Society: ${vesselData.classification}
-- Current Charter Rate: $${vesselData.charterRate}/day
-- Estimated Market Value: $${vesselData.marketValue}M
-- Number of Previous Owners: ${vesselData.owners}
-- Last Special Survey: ${vesselData.lastSurvey}
-- Current Employment: ${vesselData.employment}
-- Additional Notes: ${vesselData.notes || 'None'}
+- Classification: ${vesselData.classification}
+- Charter Rate: $${vesselData.charterRate}/day
+- Market Value: $${vesselData.marketValue}M
+- Previous Owners: ${vesselData.owners}
+- Last Survey: ${vesselData.lastSurvey}
+- Employment: ${vesselData.employment}
+- Notes: ${vesselData.notes || 'None'}
 
-Provide a comprehensive investment underwriting report in the following EXACT JSON structure (respond ONLY with valid JSON, no markdown, no preamble):
+Respond ONLY with valid JSON, no markdown, no preamble:
 
 {
-  "overallScore": <integer 0-100>,
-  "verdict": "<STRONG BUY | BUY | HOLD | AVOID>",
-  "verdictReason": "<one punchy sentence summarizing the verdict>",
+  "overallScore": 72,
+  "verdict": "BUY",
+  "verdictReason": "one punchy sentence",
   "categories": {
-    "vesselCondition": {
-      "score": <0-100>,
-      "label": "Vessel Condition",
-      "finding": "<2-3 sentence analysis>"
-    },
-    "marketPosition": {
-      "score": <0-100>,
-      "label": "Market Position",
-      "finding": "<2-3 sentence analysis>"
-    },
-    "charterCoverage": {
-      "score": <0-100>,
-      "label": "Charter Coverage",
-      "finding": "<2-3 sentence analysis>"
-    },
-    "tokenizationFit": {
-      "score": <0-100>,
-      "label": "Tokenization Fit",
-      "finding": "<2-3 sentence analysis — suitability for blockchain fractional ownership>"
-    },
-    "regulatoryCompliance": {
-      "score": <0-100>,
-      "label": "Regulatory & Flag Risk",
-      "finding": "<2-3 sentence analysis>"
-    }
+    "vesselCondition": {"score": 70, "label": "Vessel Condition", "finding": "2-3 sentences"},
+    "marketPosition": {"score": 75, "label": "Market Position", "finding": "2-3 sentences"},
+    "charterCoverage": {"score": 68, "label": "Charter Coverage", "finding": "2-3 sentences"},
+    "tokenizationFit": {"score": 80, "label": "Tokenization Fit", "finding": "2-3 sentences"},
+    "regulatoryCompliance": {"score": 72, "label": "Regulatory & Flag Risk", "finding": "2-3 sentences"}
   },
-  "keyRisks": [
-    "<risk 1>",
-    "<risk 2>",
-    "<risk 3>"
-  ],
-  "investmentHighlights": [
-    "<highlight 1>",
-    "<highlight 2>",
-    "<highlight 3>"
-  ],
-  "estimatedYield": {
-    "low": <number>,
-    "mid": <number>,
-    "high": <number>
-  },
-  "tokenizationSuitability": "<HIGH | MEDIUM | LOW>",
-  "tokenizationNotes": "<2-3 sentences on Web3/MAT suitability, SPV structure recommendation, and smart contract considerations>",
-  "analystNote": "<A candid, opinionated 2-3 sentence closing note from the AI underwriter>"
-}`
+  "keyRisks": ["risk 1", "risk 2", "risk 3"],
+  "investmentHighlights": ["highlight 1", "highlight 2", "highlight 3"],
+  "estimatedYield": {"low": 4.5, "mid": 6.2, "high": 8.1},
+  "tokenizationSuitability": "HIGH",
+  "tokenizationNotes": "2-3 sentences on tokenization",
+  "analystNote": "2-3 sentence closing note"
+}
+
+Replace all placeholder values with real analysis based on the vessel data above.`
 
     try {
       const res = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${GROK_KEY}`
         },
         body: JSON.stringify({
           model: 'grok-3-mini',
@@ -119,7 +81,7 @@ Provide a comprehensive investment underwriting report in the following EXACT JS
       const parsed = JSON.parse(clean)
       setAnalysis({ ...parsed, vessel: vesselData })
     } catch (e) {
-      setError(e.message || 'Analysis failed. Check your API key and try again.')
+      setError(e.message || 'Analysis failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -127,8 +89,7 @@ Provide a comprehensive investment underwriting report in the following EXACT JS
 
   return (
     <div className="app">
-      {showModal && <ApiKeyModal onSave={handleSaveKey} onClose={() => setShowModal(false)} hasKey={!!apiKey} />}
-      <Header onSettings={() => setShowModal(true)} />
+      <Header />
       <main className="main">
         <div className="layout">
           <div className="form-col">
