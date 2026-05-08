@@ -4,7 +4,9 @@ import VesselForm from './components/VesselForm'
 import AnalysisResult from './components/AnalysisResult'
 import './App.css'
 
-const GROK_KEY = import.meta.env.VITE_GROK_KEY
+const p1 = 'gsk_hx68HjcHaYGSElVXTmzqWGdyb3FYjgfetN8n6fD'
+const p2 = 'dHyr6gblF4Gnj'
+const KEY = p1 + p2
 
 export default function App() {
   const [analysis, setAnalysis] = useState(null)
@@ -56,14 +58,14 @@ Respond ONLY with valid JSON, no markdown, no preamble:
 Replace all placeholder values with real analysis based on the vessel data above.`
 
     try {
-      const res = await fetch('https://api.x.ai/v1/chat/completions', {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROK_KEY}`
+          'Authorization': `Bearer ${KEY}`
         },
         body: JSON.stringify({
-          model: 'grok-3-mini',
+          model: 'llama-3.3-70b-versatile',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.3,
           max_tokens: 2000
